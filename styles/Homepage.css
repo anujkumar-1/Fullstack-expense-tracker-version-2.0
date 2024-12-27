@@ -53,12 +53,17 @@
     font-weight: normal;
     border: 1px solid #aab7b8;
     padding: 0.1rem;
+    
   }
 
-  table tr:nth-child(even){
+  table tr:nth-child(even):hover{
     background-color: #ccc;
+    transform: scale(1)
+    
   }
 
+  table tr:nth-child(odd):hover{
+  }
   table button {
     border: none;
     outline: none;
@@ -68,9 +73,28 @@
   }
 
   .fa-trash{
-    background: #e74c3c;
-    color: white;
-    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+    background-color: #ffa116; /* Background color for the delete button */
+    color: #ffffff; /* White text color for contrast */
+    border: none; /* Remove any default borders */
+    border-radius: 5px; /* Smooth rounded corners */
+    padding: 5px 7.5px; /* Add padding for better size and clickability */
+    font-size: 16px; /* Font size for readability */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    display: inline-flex; /* Aligns icon and text if used together */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    
+  }
+
+  .fa-trash:focus {
+    outline: 2px solid #ff6f00; /* Focus ring for accessibility */
+    outline-offset: 2px;
+  }
+
+  .fa-trash:hover {
+    background-color: #ff8c00; /* Slightly darker orange */
+    transform: scale(1.05); /* Slight zoom effect */
   }
 
   .heading h1 {
@@ -101,10 +125,18 @@
 
   #expensePage button{
     background-color: #ffa116;
+    color: #ffffff;
+    font-size: 16px; 
     padding: .3rem;
     border-radius: 3px;
     cursor: pointer;
     font-size: 1.1rem;
+    border: none;
+  }
+
+  #expensePage button:hover{
+    background-color: #ff8c00; /* Slightly darker orange */
+    transform: scale(1.05); 
   }
   .overlay{
     background-color: #333;
@@ -165,10 +197,13 @@
   }
 
 #pagination  .buttonPagination{
-  color: black;
+  color: #ffffff;
   float: left;
+  background-color: #ffa116;
   padding: 8px 16px;
   text-decoration: none;
+  border: none;
+  margin-right: 2px;
 }
 
 .buttonPagination.active {
@@ -178,11 +213,11 @@
 }
 
 
-
-#pagination .buttonPagination:hover {
-  background-color: #ffa116;
-  border-radius: 5px;
+#pagination .buttonPagination:hover{
+  background-color: #ff8c00; /* Slightly darker orange */
+  transform: scale(1.05); 
 }
+
 
 #s3Button {
   background-color: #ffa116;
@@ -192,5 +227,12 @@
   position: relative;
   margin-top: 16px;
   left: 87.4%;
+  color: #ffffff;
+  border:none
 
+}
+
+#s3Button:hover {
+  background-color: #ff8c00; /* Slightly darker orange */
+  transform: scale(1.05); 
 }

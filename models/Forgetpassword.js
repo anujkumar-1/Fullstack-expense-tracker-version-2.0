@@ -1,6 +1,7 @@
-const sequelize = require("../utils/Database")
-const DataTypes = require("sequelize")
-const User = require("./User")
+import {DataTypes} from "sequelize"
+import sequelize from '../utils/Database.js';
+
+import User from "./User.js"
 
 const ForgotPassword = sequelize.define("forgotPassword", {
     id: {
@@ -20,4 +21,4 @@ User.hasMany(ForgotPassword)
 ForgotPassword.belongsTo(User)
 
 
-module.exports = ForgotPassword;
+export default ForgotPassword;

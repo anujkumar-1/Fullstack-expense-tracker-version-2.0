@@ -1,10 +1,9 @@
-const User = require("../models/User")
-const ForgetPassword = require("../models/Forgetpassword")
-const sequelize = require("../utils/Database");
-
-const nodemailer = require("nodemailer");
-const uuid = require("uuid")
-
+import User from "../models/User.js"
+import ForgetPassword from "../models/Forgetpassword.js"
+import nodemailer from "nodemailer"
+import { v4 as uuidv4 } from 'uuid';
+import bcrypt from "bcrypt";
+ 
 const transporter = nodemailer.createTransport({
   host: process.env.NODEMAILER_HOST,
   port: 465,
@@ -16,24 +15,25 @@ const transporter = nodemailer.createTransport({
 });
 
 
-async function sendMail(to, sub, msg, id){
+export async function sendMail(to, sub, msg, id){
     await transporter.sendMail({
         to: to,
         subject: sub,
         text: msg,
-        html: `<a href="http://localhost:3000/resetpassword/${id}">Reset Password</a>`, // html body
+        html: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset Password</a>`, // html body
     })
 }
 
 
-const forgetPasswordReq = async(req, res) =>{
+export const forgetPasswordReq = async(req, res) =>{
     try {
         const email = req.body.email
         console.log(email)
         console.log("req.body", req.user)
         const user = await User.findOne({where: {email}})
+        console.log(user)
         if(user){
-            const id = uuid.v4()
+            const id = uuidv4()
             const msg = await sendMail(email, `Reset Password for ${email}`, "Click on the link below", id)
             const data=await ForgetPassword.create({id: id, userId: req.user.userId, isActive: true})
             console.log(id)
@@ -51,13 +51,10 @@ const forgetPasswordReq = async(req, res) =>{
     }
 }
 
-const resetPasswordReq = async (req, res) => {
+export const resetPasswordReq = async (req, res) => {
     try {
         const uid = req.params.id
-        console.log("uid", uid)
         const Fpid = await ForgetPassword.findOne({where: {id: uid}})
-
-        console.log("Fpid :", Fpid)
         if(Fpid){
             await Fpid.update({isActive: false})
             res.status(200).send(`
@@ -68,82 +65,101 @@ const resetPasswordReq = async (req, res) => {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>Reset Password</title>
                     <style>
-                    *{
+                    body {
                         margin: 0;
-                        padding: 0;
-                        font-family: Arial, Helvetica, sans-serif;
-                        box-sizing: border-box;
-                    }
-
-                    .overLay {
-                        width: 100%;
+                        font-family: 'Arial', sans-serif;
+                        background: linear-gradient(135deg, rgb(224, 247, 250), rgb(108, 99, 255));
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         height: 100vh;
-                        position: absolute;
-                        background: rgba(0, 0, 0, 0.5);
-                        top:0;
-                        z-index: -1;
-                        opacity: 0;
+                        color: #333;
                     }
 
-
-                    .container{
-                        width: 350px;
-                        background-color: white;
-                        padding:30px 20px;
-                        position: absolute;
-                        left: 50%;
-                        top: 50%;
-                        transform: translate(-50%, -50%);
-                        box-shadow: 0px 0px 10px 7px #ccc;
-                    }
-
-                    .container input{
+                    .container {
+                        background: white;
+                        padding: 2rem;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                        max-width: 320px;
                         width: 100%;
-                        height: 35px;
-                        margin-bottom: 15px;
                     }
 
+                    .reset-password-form h1 {
+                        font-size: 1.8rem;
+                        margin-bottom: 1.5rem;
+                        color: rgb(108, 99, 255);
+                        text-align: center;
+                    }
 
+                    .input-group {
+                        margin-bottom: 1.5rem;
+                        position: relative;
+                    }
 
-                    #resetPasswordButton{
-                        background-color: black;
+                    .input-group label {
+                        font-size: 0.9rem;
+                        color: #555;
+                        margin-bottom: 0.5rem;
+                        display: block;
+                    }
+
+                    .input-group input {
+                        width: 100%;
+                        padding: 0.75rem;
+                        border: 1px solid #ccc;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        outline: none;
+                        transition: all 0.3s ease;
+                    }
+
+                    .input-group input:focus {
+                        border-color: rgb(108, 99, 255);
+                        box-shadow: 0 0 4px rgba(108, 99, 255, 0.5);
+                    }
+
+                    .input-group .toggle-password {
+                        position: absolute;
+                        right: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                        color: #888;
+                        transition: color 0.3s ease;
+                    }
+
+                    .input-group .toggle-password:hover {
+                        color: rgb(108, 99, 255);
+                    }
+
+                    button {
+                        width: 100%;
+                        padding: 0.75rem;
+                        border: none;
+                        border-radius: 8px;
+                        background: #ffa116;
                         color: white;
-                        padding: 10px 15px;
-                        margin-bottom: 15px;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
                     }
 
-
-
-                    .container input:focus-visible{
-                        outline: 3px solid #28ebd6;
-                    }
-
-
-
-                    h1{
-                        position:absolute;
-                        font-size: 36px;
-                        line-height: normal;
-                        font-weight: bold;
-                        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                        left: 50%;
-                        top: 30%;
-                        transform: translate(-50%, -50%);
-                    
+                    button:hover {
+                        background: rgb(88, 79, 230);
                     }
                     </style>
                 </head>
 
                 <body>
-                    <div>
-                        <h1>Password Reset</h1>
-                    </div>
-                    <div class="overLay"></div>
                     <div class="container" id="container">
-                        <form action="/updatepassword/${uid}" method="get">
-                            <label for="resetPassword">Enter new password :</label>
-                            <input type="password" id="resetPassword" name="resetPassword" required>
-                            <br>
+                        <form class="reset-password-form" action="/password/updatepassword/${uid}" method="get">
+                            <h1>Reset Password</h1>
+                            <div class="input-group">
+                                <label for="resetPassword">New Password</label>
+                                <input type="password" name="resetPassword" id="resetPassword" placeholder="Enter new password">
+                            </div>
                             <button id="resetPasswordButton">Reset Password</button>
                         </form>
                     </div>
@@ -157,20 +173,19 @@ const resetPasswordReq = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-    
-    
 }
 
-updatePasswordReq = async(req, res)=>{
+export const updatePasswordReq = async(req, res)=>{
+    const saltrounds = 10
     const newPassword = req.query.resetPassword
     const uuid = req.params.resetpasswordid
-
-    console.log(newPassword, uuid, req.user)
-    res.end()
-}
-
-module.exports = {
-    forgetPasswordReq,
-    resetPasswordReq,
-    updatePasswordReq
+    const activeUser = await ForgetPassword.findOne({where: {id: uuid}})
+    bcrypt.hash(newPassword, saltrounds, async(err, hash)=>{
+        if(err){
+            throw new Error("Something went wrong")
+        }
+        const data = await User.findOne({where:{id: activeUser.userId}})
+        const updatingPassword = await data.update({password: hash})
+        res.status(200).json({user: data, newPassword: hash, updatingPassword})
+    })
 }

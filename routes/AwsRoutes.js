@@ -1,9 +1,9 @@
-const expenseDataControllers = require("../controllers/ExpenseData")
-const authMiddleware = require("../middleware/Auth")
+import {downloadExpense} from "../controllers/ExpenseData.js";
+import authMiddleware from "../middleware/Auth.js";
 
-const express=require("express")
+import express from 'express';
 const router=express.Router()
 
-router.get("/downloadS3Data", authMiddleware.auth, expenseDataControllers.downloadExpense)
+router.get("/downloadS3Data", authMiddleware, downloadExpense)
 
-module.exports=router
+export default router;

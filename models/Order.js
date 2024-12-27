@@ -1,6 +1,7 @@
-const sequelize = require("../utils/Database")
-const DataTypes = require("sequelize")
-const User = require("./User")
+import {DataTypes} from "sequelize"
+import sequelize from '../utils/Database.js';
+
+import User from "./User.js"
 
 const Order = sequelize.define("order", {
     id: {
@@ -19,4 +20,4 @@ const Order = sequelize.define("order", {
 User.hasMany(Order)
 Order.belongsTo(User)
 
-module.exports = Order
+export default Order

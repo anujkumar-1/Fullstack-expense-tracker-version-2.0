@@ -1,11 +1,10 @@
-const incomeDataController = require("../controllers/Income")
-const authMiddleware = require("../middleware/Auth")
+import {IncomePostReq, abcIncome} from "../controllers/Income.js"
+import authMiddleware from '../middleware/Auth.js';
 
-const express=require("express")
+import express from 'express';
 const router=express.Router()
 
-router.post("/registerIncome",authMiddleware.auth, incomeDataController.IncomePostReq)
-router.get("/getIncome", incomeDataController.IncomeGetReq)
-router.get("/abc/:pageId", incomeDataController.abcIncome)
+router.post("/registerIncome",authMiddleware, IncomePostReq)
+router.get("/abc/:pageId", abcIncome)
 
-module.exports=router
+export default router;

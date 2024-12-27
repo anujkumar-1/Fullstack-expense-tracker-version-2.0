@@ -1,6 +1,7 @@
-const DataTypes = require("sequelize")
-const User = require("./User")
-const sequelize = require("../utils/Database")
+import {DataTypes} from "sequelize"
+import sequelize from '../utils/Database.js';
+
+import User from "./User.js"
 
 const Income = sequelize.define("income", {
     amount: {
@@ -22,4 +23,4 @@ const Income = sequelize.define("income", {
 User.hasMany(Income)
 Income.belongsTo(User)
 
-module.exports = Income
+export default Income

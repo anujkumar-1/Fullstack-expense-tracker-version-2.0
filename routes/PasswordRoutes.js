@@ -1,12 +1,12 @@
-const forgetPasswordController = require("../controllers/ForgetPassword")
-const authMiddleware = require("../middleware/Auth")
+import {forgetPasswordReq, resetPasswordReq, updatePasswordReq} from "../controllers/ForgetPassword.js"
+import authMiddleware from '../middleware/Auth.js';
 
-const express=require("express")
+import express from 'express';
 const router=express.Router()
 
-router.post("/password/forgotpassword", authMiddleware.auth, forgetPasswordController.forgetPasswordReq)
-router.use("/resetpassword/:id", authMiddleware.auth,  forgetPasswordController.resetPasswordReq)
-router.get("/updatepassword/:resetpasswordid", authMiddleware.auth, forgetPasswordController.updatePasswordReq)
+router.post("/forgotpassword", authMiddleware, forgetPasswordReq)
+router.use("/resetpassword/:id",  resetPasswordReq)
+router.get("/updatepassword/:resetpasswordid", updatePasswordReq)
 
 
-module.exports=router
+export default router;

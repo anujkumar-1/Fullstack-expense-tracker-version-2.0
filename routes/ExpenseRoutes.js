@@ -1,13 +1,11 @@
-const expenseDataControllers = require("../controllers/ExpenseData")
-const authMiddleware = require("../middleware/Auth")
+import {expensePostData, expenseGetData} from "../controllers/ExpenseData.js";
+import authMiddleware from '../middleware/Auth.js';
 
-const express=require("express")
+import express from 'express';
 const router=express.Router()
 
-router.post("/expenseForm",authMiddleware.auth, expenseDataControllers.expensePostData)
-router.get("/expenseAllData/:pageId",authMiddleware.auth ,expenseDataControllers.expenseGetData)
-router.get("/downloadS3Data", authMiddleware.auth, expenseDataControllers.downloadExpense)
-router.delete("/deleteExpense/:expenseid", authMiddleware.auth, expenseDataControllers.deleteExpense)
+router.post("/expenseForm",authMiddleware, expensePostData)
+router.get("/expenseAllData/:pageId",authMiddleware , expenseGetData)
 
 
-module.exports=router
+export default router;

@@ -75,6 +75,7 @@
             <th>Category</th>
             <th>Income</th>
             <th>Expense amount</th>
+            <th>Delete Expense</th>
           </tr>
         </thead>
         <tbody id="tbody">
@@ -95,14 +96,24 @@
     </div>
 
     <div id="getUserExpensePreference">
-      <label for="selectPage">Get Expense: </label>
-      <select name="selectPage" id="selectPage" onchange="getUserExpensePreference()">
-        <option value="1">Daily</option>
-        <option value="10" >Monthly</option>
-        <option value="20">Yearly</option>
+      <label for="getUserDataPreference">Get Expense: </label>
+      <select name="getUserDataPreference" id="getUserDataPreference" onchange="getUserExpensePreference()">
+        <option value="daily" selected>select</option>
+        <option value="daily">Daily</option>
+        <option value="weekly" >weekly</option>
+        <option value="monthly" >Monthly</option>
+        <option value="yearly">Yearly</option>
       </select>
     </div>
-    
+
+    <div class="pagination" id="pagination">
+      
+    </div>
+
+    <div id="s3DataDownload" style="display: none;">
+      <button id="s3Button">Download All Data</button>
+    </div>
+
     <div id="showLeaderboard" style="display: none;" class="container">
       <div>
         <h2>Leaderboard</h2>
@@ -121,398 +132,12 @@
       </table>
     </div>
     
-    <div id="s3DataDownload" style="display: none;">
-      <button id="s3Button">Download All Data</button>
-    </div>
-
-    <div class="pagination" id="pagination">
-      
-    </div>
+    
+    <script src="./js/homePage.js"></script>
+    
 
     <script>
-      async function expenseForm(event) {
-        try {
-          event.preventDefault();
-          const amount = event.target.amount.value;
-          const description = event.target.itemDescription.value;
-          const category = event.target.category.value;
-          const lengthOfRowPerPage = document.getElementById("selectPage");
-         
-
-
-         if(category == "Income"){
-          let incomeObj = {
-            amount: amount,
-            description:  description,
-            category: category
-          }
-
-          const authTokenJwt = localStorage.getItem("token");
-
-          const incomeRes = await axios.post(
-            "http://localhost:3000/registerIncome",
-            incomeObj,
-            { headers: { Authorization: authTokenJwt } }
-          );
-          const trTbody = document.createElement("tr")
-          const tbody = document.getElementById("tbody")
-          const utcDate= new Date(incomeRes.data.data.createdAt)
-          const localDate = utcDate.toDateString()
-          let dataArr= [localDate, incomeRes.data.data.description, incomeRes.data.data.category, incomeRes.data.data.amount]
-          
-          
-          dataArr.forEach((tdText)=>{
-            let td = document.createElement("td")
-            td.innerText = tdText
-            trTbody.appendChild(td)
-          })
-          tbody.appendChild(trTbody)
-          console.log(trTbody);
-
-          
-         }else{
-          let expenseObj = {
-            amount: amount,
-            description: description,
-            category: category,
-            
-          };
-
-          const UTCDate = new Date()
-          localDate = UTCDate.toDateString()
-
-          const ele = document.createElement("tr")
-          const tbody = document.getElementById("tbody")
-          let tdHeader = [localDate, description, category, "", amount]
-
-          for(let i =0; i<tdHeader.length; i++){
-            let td = document.createElement("td");
-            td.innerText = tdHeader[i]
-            ele.appendChild(td)
-          }
-          tbody.appendChild(ele)
-          
-          console.log(expenseObj);
-          const jwtToken = localStorage.getItem("token");
-          const response = await axios.post(
-            "http://localhost:3000/expenses/expenseForm",
-            expenseObj,
-            { headers: { Authorization: jwtToken } }
-          );
-          console.log(response);
-          
-         }
-         
-         
-        } 
-        catch (error) {
-          throw new Error(error);
-        }
-      }      
-      const table = document.getElementById("table");
-
-      table.addEventListener("click", async function (event) {
-        const token = localStorage.getItem("token")
-        if(event.target.classList.contains("fa-trash")){
-          const expenseid = event.target.id
-          console.log(expenseid)
-          const deleteExpense = await axios.delete(`http://localhost:3000/expenses/deleteExpense/${expenseid}`, { headers: {Authorization: token}})
-        }
-      });
-
-      function showPremiumUserMsg(){
-         document.getElementById("rzp-button1").style.display = "none";
-          document.getElementById("ispremium").textContent = "you are a premium user"
-          document.getElementById("ispremium").style.color= "white"
-          document.getElementById("ispremium").style.fontSize= "10px"
-          document.getElementById("ispremium").style.textAlign= "center"
-         
-      }
-
-      function parseJwt (token) {
-          var base64Url = token.split('.')[1];
-          var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-          var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-          }).join(''));
-
-          return JSON.parse(jsonPayload);
-      }
-
-      function showAllLeaderboardUser(){
-        const leaderboard = document.getElementById("premiumLeaderBoard")
-        leaderboard.style.display = "block"
-
-        leaderboard.addEventListener("click", async function(e){
-          const showLeaderboard = document.getElementById("showLeaderboard")
-          const tbody = document.getElementById("tbodyshowLeaderboard")
-          showLeaderboard.style.display = "block"
-          
-
-            const token = localStorage.getItem("token");
-            const getAllLeaderboardUser = await axios.get("http://localhost:3000/leaderboardAllUser", { headers: {Authorization: token }});
-
-
-            console.log(getAllLeaderboardUser)
-            const activeUser = getAllLeaderboardUser.data.user
-
-
-            for(let i=0; i<getAllLeaderboardUser.data.arrOfAllUsers.length; i++)
-            {
-              const trTbody = document.createElement("tr")
-              let allData = [i+1, getAllLeaderboardUser.data.arrOfAllUsers[i].username, getAllLeaderboardUser.data.arrOfAllUsers[i].totalCost]
-              console.log(allData)
-
-              if(getAllLeaderboardUser.data.arrOfAllUsers[i].id ==activeUser.userId && getAllLeaderboardUser.data.arrOfAllUsers[i].username == activeUser.name){
-                const td1 = document.createElement("td")
-                const td2 = document.createElement("td")
-                const td3 = document.createElement("td")
-                td1.textContent = allData[0]
-                td2.textContent = `${allData[1]} (You)`
-                td3.textContent = allData[2]
-                trTbody.appendChild(td1)
-                trTbody.appendChild(td2)
-                trTbody.appendChild(td3)
-                tbody.appendChild(trTbody)
-
-                
-              }
-              else{
-                allData.forEach(data =>{
-                console.log(data)
-                  const td = document.createElement("td")
-                  td.innerText = data
-                  trTbody.appendChild(td)
-                  console.log(td)
-                })
-                console.log(trTbody)
-                
-                tbody.appendChild(trTbody)
-
-              }
-
-            }
-            
-        })
-
-      }
       
-      
-      document.addEventListener("DOMContentLoaded", async () => {
-        
-        const token = localStorage.getItem("token")
-        const rowsPerPage= localStorage.getItem("selectPagePreference")
-        console.log("rowsPerPage", rowsPerPage)
-        // console.log(token)
-        const decodedToken = parseJwt(token)
-        let page =1
-        console.log(decodedToken)
-        
-        if(decodedToken.ispremiumuser == 1){
-          showPremiumUserMsg()
-          showAllLeaderboardUser()
-          downloadDataFromS3()
-
-        }
-        const id = 1;
-
-        const response = await axios.get(
-          `http://localhost:3000/expenses/expenseAllData/${page}`,
-          { headers: { Authorization: token },
-          params:{
-            rowsPerPage:rowsPerPage,
-            currentDate: new Date().getDate(),
-            currentMonth: new Date().getMonth(),
-            currentYear: new Date().getFullYear(),
-
-          }
-        }
-        );
-        const url = `http://localhost:3000/abc/${id}`
-        const ANB = await axios.get(url,
-        { params:{
-            pageId:page,
-            username: "anujkumar"
-          },
-          headers: { Authorization: token }
-        },
-        
-        );
-        
-
-        // console.log(incomeResponse)
-        localStorage.setItem("totalamount", response.data.totalExpense)
-        console.log(response);
-        
-        for (let i = 0; i < response.data.allData.length; i++) {
-          
-          showExpenseOnScreen(response.data.allData[i]);
-        }
-        showPagination(response.data.lastPage)
-        
-      });
-
-
-      function showExpenseOnScreen(event) {
-        console.log(event)
-        // let table = document.getElementById("table");
-        const tbody = document.getElementById("tbody")
-      
-        const button = document.createElement("button")
-        const trTbody = document.createElement("tr")
-        trTbody.innerHTML = ``
-        // const td4 = document.createElement("td")
-        const utcDate = new Date(event.createdAt)
-        const localDate = utcDate.toDateString()
-        console.log(localDate)
-        let tdHeaders =[]
-         tdHeaders = [localDate, event.description, event.category, "", event.amount]
-        if(event.category == "Income"){
-          tdHeaders = [localDate, event.description, event.category, event.amount, ""]
-        }
-        else{
-          tdHeaders = [localDate, event.description, event.category, "", event.amount]
-        }
-
-        tdHeaders.forEach((tdText)=>{
-          let td = document.createElement("td")
-          td.innerText = tdText
-          trTbody.appendChild(td)
-        })
-        // td4.appendChild(button)
-        // button.className = "fa fa-trash"
-        // button.id= event.id
-        
-
-        tbody.appendChild(trTbody)
-      }
-
-      function showPagination(lastPage){
-        const paginationContainer = document.getElementById("pagination");
-        paginationContainer.innerHTML = ""
-        // if(hasPreviousPage){
-        //   const btn2 = document.createElement("button");
-        //   btn2.innerText = previousPage
-        //   btn2.addEventListener("click", () => getExpenses(previousPage))
-        //   paginationContainer.appendChild(btn2)
-        // }
-
-        // const btn1 = document.createElement("button");
-        // btn1.innerText = currentPage
-        // btn1.addEventListener("click", () => getExpenses(currentPage))
-        // paginationContainer.appendChild(btn1)
-
-        // if(hasNextPage){
-        //   const btn3 = document.createElement("button");
-        //   btn3.innerText = nextPage
-        //   btn3.addEventListener("click", () => getExpenses(nextPage))
-        //   paginationContainer.appendChild(btn3)
-        // }
-
-        for(let i=1; i<=lastPage; i++){
-          const btn = document.createElement("button");
-          btn.innerHTML = i
-          btn.className ="buttonPagination"; 
-          btn.addEventListener("click", () => getExpenses(i))
-          paginationContainer.appendChild(btn)
-        }
-
-      }
-
-      async function getExpenses(page){
-        const rowsPerPage = localStorage.getItem("selectPagePreference")
-        const tbody = document.getElementById("tbody")
-        tbody.innerHTML = ""
-        const token = localStorage.getItem("token")
-        const res = await axios.get(`http://localhost:3000/expenses/expenseAllData/${page}`, { 
-          headers: { Authorization: token },
-          params:{
-            rowsPerPage: rowsPerPage
-          }
-        });
-
-        for (let i = 0; i < res.data.allData.length; i++) {
-          showExpenseOnScreen(res.data.allData[i]);
-        }
-
-        showPagination(res.data.lastPage)
-        
-
-      }
-      
-
-      
-      document.getElementById('rzp-button1').onclick = async function(e){
-        console.log("Razorpay got clicked")
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/buyPremiumMembership", { headers: { Authorization: token }});
-        console.log(response)
-        
-        var options = {
-          "key": response.data.key_id,
-          "order_id": response.data.order.id,
-          "currency": "INR",
-          "name": "Acme Corp", //your business name
-          "handler": async function(response){
-            const data = await axios.post("http://localhost:3000/updatePremiumMembership",{
-              order_id: options.order_id,
-              payment_id: response.razorpay_payment_id
-
-            }, { headers: { Authorization: token }})
-            
-            console.log(data)
-            alert("You are a premium user now")
-            showPremiumUserMsg()
-            localStorage.setItem("token", data.data.token)
-            showAllLeaderboardUser()
-            downloadDataFromS3()
-
-          }
-          
-        }
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
-        e.preventDefault();
-
-        rzp1.on("payment.failed", async function(response){
-          const reponse = await axios.post("http://localhost:3000/updateErrorPremiumMembership",{
-              order_id: options.order_id,
-              payment_id: response.razorpay_payment_id
-              
-            }, { headers: { Authorization: token }})
-          console.log("Something went wrong");
-          alert("Something went wrong")
-        })
-
-
-      }
-      console.log(localStorage.getItem("selectPagePreference"))
-      
-    function selectTable(){
-      const val = document.getElementById("selectPage").value
-      localStorage.setItem("selectPagePreference", val)
-     
-    }
-
-    function downloadDataFromS3(){
-      document.getElementById("s3DataDownload").style.display = "block"
-      const downloadExpense = document.getElementById("s3Button")
-
-      downloadExpense.addEventListener("click", async()=>{
-        try {
-          const getToken = localStorage.getItem("token");
-          console.log(getToken)
-          const S3response = await axios.get("http://localhost:3000/downloadS3Data", { headers: { Authorization: getToken }});
-          console.log("S3response", S3response)
-
-        } catch (error) {
-          console.log(error)
-        }
-      })
-
-    }
-
-    
     </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
-const DataTypes = require("sequelize")
-const User = require("./User")
-const sequelize = require("../utils/Database")
+import {DataTypes} from "sequelize"
+import sequelize from '../utils/Database.js';
+
+import User from "./User.js"
 
 
 const expenseTable = sequelize.define("expense", {
@@ -23,4 +24,4 @@ const expenseTable = sequelize.define("expense", {
 User.hasMany(expenseTable)
 expenseTable.belongsTo(User)
 
-module.exports = expenseTable
+export default expenseTable

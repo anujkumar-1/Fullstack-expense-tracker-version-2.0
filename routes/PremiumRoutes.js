@@ -1,13 +1,13 @@
-const buyPremiumControllers = require("../controllers/Premium")
-const authMiddleware = require("../middleware/Auth")
+import {buyPremiumGetReq, updatePremiumReqSuccess, updatePremiumReqFailed, getAllLeaderboardUser} from "../controllers/Premium.js"
+import authMiddleware from '../middleware/Auth.js';
 
-const express=require("express")
+import express from 'express';
 const router=express.Router()
 
-router.get("/buyPremiumMembership", authMiddleware.auth, buyPremiumControllers.buyPremiumGetReq)
-router.post("/updatePremiumMembership", authMiddleware.auth, buyPremiumControllers.updatePremiumReqSuccess)
-router.post("/updateErrorPremiumMembership", authMiddleware.auth, buyPremiumControllers.updatePremiumReqFailed)
-router.get("/leaderboardAllUser", authMiddleware.auth, buyPremiumControllers.getAllLeaderboardUser)
+router.get("/buyPremiumMembership", authMiddleware, buyPremiumGetReq)
+router.post("/updatePremiumMembership", authMiddleware, updatePremiumReqSuccess)
+router.post("/updateErrorPremiumMembership", authMiddleware, updatePremiumReqFailed)
+router.get("/leaderboardAllUser", authMiddleware, getAllLeaderboardUser)
 
 
-module.exports=router
+export default router;

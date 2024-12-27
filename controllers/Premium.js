@@ -1,14 +1,11 @@
-const Order = require("../models/Order");
-const User = require("../models/User");
-const expenseTable = require("../models/Expense");
-const sequelize = require("../utils/Database");
+import Order from "../models/Order.js";
+import User from "../models/User.js";
+import Razorpay from "razorpay";
+import jwt from 'jsonwebtoken';
+import { Op } from "sequelize";
 
 
-const Razorpay = require("razorpay");
-const jwt = require("jsonwebtoken");
-
-
-const buyPremiumGetReq = async (req, res) => {
+export const buyPremiumGetReq = async (req, res) => {
   try {
     var rzp = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
@@ -25,7 +22,7 @@ const buyPremiumGetReq = async (req, res) => {
         const data = await Order.create({orderid: order.id, status: "PENDING", userInfoId: req.user.userId});
         res.status(201).json({ order, key_id: rzp.key_id, status: "PENDING", data });
       } catch (error) {
-        throw new Error(JSON.stringify(err));
+        throw new Error(error);
       }
     });
   } catch (error) {
@@ -33,9 +30,8 @@ const buyPremiumGetReq = async (req, res) => {
   }
 };
 
-const updatePremiumReqSuccess = async function (req, res) {
+export const updatePremiumReqSuccess = async function (req, res) {
   try {
-    const t = await sequelize.transaction()
     const token = req.header("Authorization");
     console.log(token);
     console.log("req.user", req.user);
@@ -43,13 +39,12 @@ const updatePremiumReqSuccess = async function (req, res) {
     const response = await Order.findOne({ where: { orderid: order_id } });
     const promise1 = await response.update({
       paymentstatus: payment_id,
-      status: "SUCESSFULL",
-      transaction: t
+      status: "SUCESSFULL"
+      
     });
     const promise2 = await User.findOne({ where: { id: req.user.userId } });
-    const promise3 = await promise2.update({ ispremiumuser: true, transaction: t});
+    const promise3 = await promise2.update({ ispremiumuser: true});
     console.log(promise3.ispremiumuser);
-    await t.commit()
     res
       .status(200)
       .json({
@@ -69,32 +64,37 @@ const updatePremiumReqSuccess = async function (req, res) {
         ),
       });
   } catch (error) {
-    await t.rollback()
-    throw new Error(err);
+    throw new Error(error);
   }
 };
 
-const updatePremiumReqFailed = async function (req, res) {
+export const updatePremiumReqFailed = async function (req, res) {
   try {
-    const t = await sequelize.transaction()
     const { order_id, payment_id } = req.body;
     const response = await Order.findOne({ where: { orderid: order_id } });
     const promise1 = await response.update({
       paymentstatus: payment_id,
-      status: "Failed",
-      transaction: t
+      status: "Failed"
     });
     t.commit()
     res.status(200).json({ sucess: false, message: "Transaction Failed" });
   } catch (error) {
     t.rollback()
-    throw new Error(err);
+    throw new Error(error);
   }
 };
 
-const getAllLeaderboardUser = async function (req, res) {
+export const getAllLeaderboardUser = async function (req, res) {
   try {
     const arrOfAllUsers = await User.findAll({
+      
+      where:{ 
+        totalCost: {
+          [Op.ne]: 0
+        }
+
+      },
+      attributes: ["id","username", "totalCost"],
       order: [["totalCost", "DESC"]],
     });
 
@@ -104,9 +104,4 @@ const getAllLeaderboardUser = async function (req, res) {
     throw new Error("Problem in getAllLeaderboardUser");
   }
 };
-module.exports = {
-  buyPremiumGetReq,
-  updatePremiumReqSuccess,
-  updatePremiumReqFailed,
-  getAllLeaderboardUser,
-};
+

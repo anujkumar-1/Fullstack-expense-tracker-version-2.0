@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "Anujj Kumar",
   "license": "ISC",
   "dependencies": {
+    "@arcjet/node": "^1.0.0-alpha.34",
+    "@aws-sdk/client-s3": "^3.705.0",
+    "@sequelize/core": "^7.0.0-alpha.43",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -19,10 +23,13 @@
     "express": "^4.21.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.11.4",
     "node": "^20.18.1",
     "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.9",
+    "pdfkit": "^0.15.2",
     "razorpay": "^2.9.5",
     "sequelize": "^6.37.5",
     "wkhtmltopdf": "^0.4.0"

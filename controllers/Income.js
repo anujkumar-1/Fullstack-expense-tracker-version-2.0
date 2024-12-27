@@ -1,13 +1,8 @@
-const Income = require("../models/Income")
-const User = require("../models/User")
-const expenseTable = require("../models/Expense")
-const sequelize = require("../utils/Database")
+import Income from "../models/Income.js"
+import User from "../models/User.js"
 
 
-const jwt = require("jsonwebtoken")
-
-
-IncomePostReq = async(req, res)=>{
+ export const IncomePostReq = async(req, res)=>{
     try {
         // const t = await sequelize.transaction()
         console.log("req income", req.user);
@@ -29,41 +24,11 @@ IncomePostReq = async(req, res)=>{
     }
 
 }
-
-IncomeGetReq = async(req, res)=>{
-    try {
-        const page = +req.params.pageId
-        console.log(page)
-        console.log("req.user :", req.user)
-        const response = await Income.findAll({
-            where:{userInfoId: req.user.userId},
-            limit : 3,
-            offset : (page-1)*3
-        }
-        
-        )
-        console.log("res", response)
-        
-        const allIncomeCount = await Income.count({where: {userInfoId: req.user.userId}})
-        const totalIncome = await Income.sum("amount", {where: {userInfoId: req.user.userId}})
-        res.status(200).json({incomeData:response, totalIncome: totalIncome, dataCount: allIncomeCount})
-
-        
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const abcIncome = async(req, res)=>{
+export const abcIncome = async(req, res)=>{
     try {
         console.log(req.params.pageId, req.query.pageId, req.query.username, req.header("Authorization"))
     } catch (error) {
         console.log(error)
     }
     res.end()
-}
-module.exports = {
-    IncomePostReq,
-    IncomeGetReq,
-    abcIncome
 }
