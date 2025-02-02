@@ -1,0 +1,382 @@
+*{
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+   }
+
+   body{
+    
+    background: linear-gradient(135deg, rgb(224, 247, 250), rgb(108, 99, 255));
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    width: 100vw;
+    
+   }
+
+   .container{
+    max-width: 1440px;
+    margin: 0px auto;
+    background-color: white;
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+   }
+
+   .container h2 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-top: 2rem;
+    
+   }
+
+   .container .fa-trash:hover{
+    cursor: pointer;
+   }
+
+   .fa-trash:before{
+      margin-right:6px;
+   }
+   table{
+    
+    width:100%;
+    border-collapse: collapse;
+    text-align: center;
+   }
+
+  table thead {
+    background-color: rgb(108, 99, 255);
+    
+    color: white;
+   
+
+  }
+
+  table thead tr th {
+    padding: 0.8rem 0.2rem;
+    font-weight: bold;
+    border: 1px solid #aab7b8;
+  }
+
+  table tbody tr td {
+    font-weight: normal;
+    border: 1px solid #aab7b8;
+    padding: 0.1rem;
+    
+  }
+
+  table tr:nth-child(even):hover{
+    background-color: #ccc;
+    transform: scale(1)
+    
+  }
+
+  table tr:nth-child(odd):hover{
+  }
+  table button {
+    border: none;
+    outline: none;
+    padding: 0.4rem;
+    margin: 0 auto;
+
+  }
+
+  .fa-trash{
+    background-color: #ffa116; /* Background color for the delete button */
+    color: #ffffff; /* White text color for contrast */
+    border: none; /* Remove any default borders */
+    border-radius: 5px; /* Smooth rounded corners */
+    padding: 5px 7.5px; /* Add padding for better size and clickability */
+    font-size: 16px; /* Font size for readability */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    display: inline-flex; /* Aligns icon and text if used together */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    padding-right: 6px;
+    
+  }
+
+  .fa-trash:focus {
+    outline: 2px solid #ff6f00; /* Focus ring for accessibility */
+    outline-offset: 2px;
+  }
+
+  .fa-trash:hover {
+    background-color: #ff8c00; /* Slightly darker orange */
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+
+  .heading h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 1rem 1rem;
+  }
+
+  #expensePage{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width:100%;
+  }
+  #expensePage input{
+    padding: 10px;
+    width: 25%;
+    margin: 0px .5rem;
+    font-size: 1.1rem
+  }
+
+  #expensePage #cateogory{
+    padding: 10px;
+    width: 17%;
+    margin: 0px .5rem;
+    font-size: 1.1rem;
+  }
+
+  #expensePage button{
+    background-color: #ffa116;
+    color: #ffffff;
+    font-size: 16px; 
+    padding: .3rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    border: none;
+  }
+
+  #expensePage button:hover{
+    background-color: #ff8c00; /* Slightly darker orange */
+    transform: scale(1.05); 
+  }
+  .overlay{
+    width: 100vw;
+    background-color: rgb(108, 99, 255);
+    height: 2.8rem;
+  }
+  .premiumContainer{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  #selectPageLength{
+    position: absolute;
+    margin-top: 10px;
+    right: 3.5%;
+    font-size: 1.1rem;
+  }
+
+  #getUserExpensePreference {
+    position: absolute;
+    margin-top: 10px;
+    left: 3.5%;
+    font-size: 1.1rem;
+  }
+
+  #premiumLeaderBoard{
+    background-color: #ffa116;
+    padding: .3rem;
+    font-family:  sans-serif
+  }
+
+  #rzp-button1{
+    background-color: #ffa116;
+    padding: .3rem;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top:8px;
+    margin-right:8px;
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+    font-size: .9rem;
+    
+  }
+
+  #goback a {
+    position:absolute;
+    top: 8px;
+    text-decoration: none;
+    color: #ffa116;
+    left: 8px;
+    font-size: 1.1rem;
+  }
+
+  #pagination{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    align-items: center;
+  }
+
+#pagination  .buttonPagination{
+  color: #ffffff;
+  float: left;
+  background-color: #ffa116;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: none;
+  margin-right: 2px;
+}
+
+.buttonPagination.active {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+
+#pagination .buttonPagination:hover{
+  background-color: #ff8c00; /* Slightly darker orange */
+  transform: scale(1.05); 
+}
+
+
+#s3Button {
+  background-color: #ffa116;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  position: relative;
+  margin-top: 16px;
+  left: 87.4%;
+  color: #ffffff;
+  border:none
+
+}
+
+#s3Button:hover {
+  background-color: #ff8c00; /* Slightly darker orange */
+  transform: scale(1.05); 
+}
+
+
+/* Media query for devices with a max width of 768px (tablets and smaller screens) */
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    padding: 0 1rem;
+  }
+
+  .container {
+    margin: 1rem auto;
+    padding: 1rem;
+    box-shadow: none; /* Reduce box-shadow for simplicity on smaller screens */
+  }
+
+  .container h2 {
+    font-size: 2rem;
+    margin-top: 1rem;
+  }
+
+  #expensePage {
+    flex-direction: column; /* Stack inputs vertically */
+    align-items: stretch; /* Make inputs take full width */
+  }
+
+  #expensePage input,
+  #expensePage #cateogory,
+  #expensePage button {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  table {
+    font-size: 0.9rem; /* Reduce table font size */
+  }
+
+  table thead tr th,
+  table tbody tr td {
+    padding: 0.5rem;
+  }
+
+  #selectPageLength,
+  #getUserExpensePreference {
+    position: static; /* Remove absolute positioning */
+    margin: 1rem 0;
+    text-align: center; /* Center align elements */
+    
+  }
+
+  #goback a {
+    font-size: 1rem;
+    top: auto;
+    left: auto;
+    position: relative;
+  }
+
+  #s3Button {
+    left: auto;
+    margin: 1rem auto;
+    display: block;
+    text-align: center;
+  }
+
+  .premiumContainer {
+    position: static; /* Remove absolute positioning */
+    text-align: center;
+    margin: 1rem 0;
+  }
+
+  #rzp-button1,
+  #premiumLeaderBoard {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  #pagination {
+    
+    flex-direction: row;
+    margin: 1rem 0;
+  }
+
+  #pagination .buttonPagination {
+    
+    margin: 0.5px;
+  }
+
+  #showLeaderboard,
+  #tableshowLeaderboard {
+    margin: 1rem 0;
+    overflow-x: auto; /* Enable horizontal scrolling for tables if needed */
+  }
+
+  .fa-trash {
+    font-size: 14px; /* Adjust icon size */
+    padding-right: 5px;
+    gap: 6px;
+  }
+}
+
+/* Media query for devices with a max width of 480px (phones) */
+@media (max-width: 480px) {
+  .container h2 {
+    font-size: 1.5rem;
+  }
+
+  #expensePage input,
+  #expensePage #cateogory,
+  #expensePage button {
+    font-size: 1rem;
+  }
+
+  table thead tr th,
+  table tbody tr td {
+    font-size: 0.8rem;
+    padding: 0.3rem;
+  }
+
+  #rzp-button1,
+  #premiumLeaderBoard {
+    font-size: 0.9rem;
+  }
+
+  #selectPageLength label,
+  #getUserExpensePreference label {
+    font-size: 0.9rem;
+  }
+
+  #s3Button {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  #pagination .buttonPagination {
+    font-size: 0.9rem;
+  }
+}

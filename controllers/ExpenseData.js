@@ -47,7 +47,7 @@ export const expensePostData = async (req, res) => {
       category: category,
       userInfoId: req.user.userId,
     });
-    const updatedCost = Number(req.totalCost.totalCost) + Number(amount);
+    const updatedCost = Number(req.activeUser.totalCost) + Number(amount);
     const updatedTotalCost = await User.update(
       { totalCost: updatedCost },
       { where: { id: req.user.userId } }
@@ -120,9 +120,10 @@ export const expenseGetData = async (req, res, next) => {
         },
       },
       attributes: ["id", "amount", "description", "category", "createdAt"],
-      order: [["createdAt", "ASC"]],
+      
       limit: rowsPerPageFrmExpense,
       offset: (page - 1) * rowsPerPageFrmExpense,
+      order: [["createdAt", "ASC"]],
     });
 
     const response4Income = await Income.findAll({
@@ -133,9 +134,10 @@ export const expenseGetData = async (req, res, next) => {
         },
       },
       attributes: ["id", "amount", "description", "category", "createdAt"],
-      order: [["createdAt", "ASC"]],
+      
       limit: rowsPerPageFrmIncome,
       offset: (page - 1) * rowsPerPageFrmIncome,
+      order: [["createdAt", "ASC"]],
     });
 
     if (
@@ -151,9 +153,10 @@ export const expenseGetData = async (req, res, next) => {
           },
         },
         attributes: ["id", "amount", "description", "category", "createdAt"],
-        order: [["createdAt", "ASC"]],
+        
         limit: deficitInIncomeData,
         offset: (page - 1) * rowsPerPageFrmExpense,
+        order: [["createdAt", "ASC"]],
       });
 
       arr = [
@@ -175,9 +178,9 @@ export const expenseGetData = async (req, res, next) => {
           },
         },
         attributes: ["id", "amount", "description", "category", "createdAt"],
-        order: [["createdAt", "ASC"]],
         limit: deficitInExpenseData,
         offset: (page - 1) * rowsPerPageFrmIncome,
+        order: [["createdAt", "ASC"]],
       });
       arr = [
         ...response4Expense,
@@ -225,6 +228,7 @@ export const expenseGetData = async (req, res, next) => {
       allIncomeCount,
       currentPage: page,
       lastPage: Math.ceil((allExpenseCount + allIncomeCount) / rowsPerPage),
+      arr: arr
     });
   } catch (error) {
     console.error("expenseGetData :", error);

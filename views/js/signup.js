@@ -10,7 +10,7 @@ async function signup(event) {
             email: email,
             password: password
         }
-        const data = await axios.post('http://localhost:3000/users/signup', obj_info)
+        const data = await axios.post(`http://localhost:3000/users/signup`, obj_info)
         console.log("data", data)
         if(data.status===201){
             alert("Signup successful, please login")

@@ -16,7 +16,7 @@ async function expenseForm(event) {
 
       const authTokenJwt = localStorage.getItem("token");
       const z = Math.random()*10
-      const z1 = parseFloat(z.toFixed(2))
+      const z1 = parseFloat(z.toFixed(4))
       const incomeRes = await axios.post(
         "http://localhost:3000/registerIncome",
         dataObj,
@@ -52,7 +52,7 @@ async function expenseForm(event) {
 
       const UTCDate = new Date()
       const x = Math.random()*100
-      const y = parseFloat(x.toFixed(2))
+      const y = parseFloat(x.toFixed(4))
       localDate = UTCDate.toDateString()
 
       const ele = document.createElement("tr")
@@ -119,59 +119,59 @@ async function expenseForm(event) {
     const leaderboard = document.getElementById("premiumLeaderBoard")
     leaderboard.style.display = "block"
 
-    leaderboard.addEventListener("click", async function(e){
-      const showLeaderboard = document.getElementById("showLeaderboard")
-      const tbody = document.getElementById("tbodyshowLeaderboard")
-      showLeaderboard.style.display = "block"
+    // leaderboard.addEventListener("click", async function(e){
+    //   const showLeaderboard = document.getElementById("showLeaderboard")
+    //   const tbody = document.getElementById("tbodyshowLeaderboard")
+    //   showLeaderboard.style.display = "block"
       
 
-        const token = localStorage.getItem("token");
-        const getAllLeaderboardUser = await axios.get("http://localhost:3000/leaderboardAllUser", { headers: {Authorization: token }});
+    //     const token = localStorage.getItem("token");
+    //     const getAllLeaderboardUser = await axios.get("http://localhost:3000/leaderboardAllUser", { headers: {Authorization: token }});
         
+    //     console.log(getAllLeaderboardUser)
+    //     getAllLeaderboardUser.data.arrOfAllUsers.forEach(data=>{
+    //       // console.log(data)
+    //       const trTbody = document.createElement("tr")
 
-        getAllLeaderboardUser.data.arrOfAllUsers.forEach(data=>{
-          // console.log(data)
-          const trTbody = document.createElement("tr")
 
+    //     })
+    //     const activeUser = getAllLeaderboardUser.data.user
+    //     const leaderboardUsers= getAllLeaderboardUser.data.arrOfAllUsers
 
-        })
-        const activeUser = getAllLeaderboardUser.data.user
-        const leaderboardUsers= getAllLeaderboardUser.data.arrOfAllUsers
+    //     for(let i=0; i<leaderboardUsers.length; i++)
+    //     {
+    //       const trTbody = document.createElement("tr")
+    //       let allData = [i+1, leaderboardUsers[i].username, leaderboardUsers[i].totalCost]
 
-        for(let i=0; i<leaderboardUsers.length; i++)
-        {
-          const trTbody = document.createElement("tr")
-          let allData = [i+1, leaderboardUsers[i].username, leaderboardUsers[i].totalCost]
-
-          if(leaderboardUsers[i].id ==activeUser.userId && leaderboardUsers[i].username == activeUser.name){
-            const td1 = document.createElement("td")
-            const td2 = document.createElement("td")
-            const td3 = document.createElement("td")
-            td1.textContent = allData[0]
-            td2.textContent = `${allData[1]} (You)`
-            td3.textContent = allData[2]
-            trTbody.appendChild(td1)
-            trTbody.appendChild(td2)
-            trTbody.appendChild(td3)
-            tbody.appendChild(trTbody)
+    //       if(leaderboardUsers[i].id ==activeUser.userId && leaderboardUsers[i].username == activeUser.name){
+    //         const td1 = document.createElement("td")
+    //         const td2 = document.createElement("td")
+    //         const td3 = document.createElement("td")
+    //         td1.textContent = allData[0]
+    //         td2.textContent = `${allData[1]} (You)`
+    //         td3.textContent = allData[2]
+    //         trTbody.appendChild(td1)
+    //         trTbody.appendChild(td2)
+    //         trTbody.appendChild(td3)
+    //         tbody.appendChild(trTbody)
             
-          }
-          else{
-            allData.forEach(data =>{
+    //       }
+    //       else{
+    //         allData.forEach(data =>{
 
-              const td = document.createElement("td")
-              td.innerText = data
-              trTbody.appendChild(td)
+    //           const td = document.createElement("td")
+    //           td.innerText = data
+    //           trTbody.appendChild(td)
               
-            })
+    //         })
             
-            tbody.appendChild(trTbody)
+    //         tbody.appendChild(trTbody)
 
-          }
+    //       }
 
-        }
+    //     }
         
-    })
+    // })
 
   }
   
@@ -205,6 +205,8 @@ async function expenseForm(event) {
       }
     }
     );
+
+    console.log("response", response)
     const url = `http://localhost:3000/abc/${id}`
     const ANB = await axios.get(url,
     { params:{
@@ -306,25 +308,29 @@ async function expenseForm(event) {
   }
 
   async function deleteExpenses(id, category, amount, description){
+    
     const token = localStorage.getItem("token")
+    const parsedObj = parseJwt(token)
+    const currentUser = parsedObj.userId
     const deleteEle = document.getElementById(id)
     console.log(deleteEle.parentElement.parentElement)
     deleteEle.parentElement.parentElement.remove()
     console.log(id, category, amount, description)
 
-    /*
+    
     const deleteExpense = await axios.delete(`http://localhost:3000/deleteExpense`, 
       { headers: { Authorization: token },
         params:{
           id: id,
           category: category,
           amount: amount,
-          description: description
+          description: description,
+          currentUser: currentUser
         }
       }
     )
     console.log(deleteExpense)
-     */
+     
 
 
   }
@@ -408,4 +414,56 @@ function downloadDataFromS3(){
   })
 
 }
+const leaderboard = document.getElementById("premiumLeaderBoard")
+const tbodyshowLeaderboard = document.getElementById("tbodyshowLeaderboard")
+leaderboard.addEventListener("click", async function(e){
+  tbodyshowLeaderboard.textContent = ``
+  const showLeaderboard = document.getElementById("showLeaderboard")
+  const tbody = document.getElementById("tbodyshowLeaderboard")
+  showLeaderboard.style.display = "block"
+  
 
+    const token = localStorage.getItem("token");
+    const getAllLeaderboardUser = await axios.get("http://localhost:3000/leaderboardAllUser", { headers: {Authorization: token }});
+    
+    console.log(getAllLeaderboardUser)
+    getAllLeaderboardUser.data.arrOfAllUsers.forEach(data=>{
+      // console.log(data)
+      const trTbody = document.createElement("tr")
+
+
+    })
+    const activeUser = getAllLeaderboardUser.data.user
+    const leaderboardUsers= getAllLeaderboardUser.data.arrOfAllUsers
+    let idx = 1
+    leaderboardUsers.forEach(user =>{
+      const trTbody = document.createElement("tr")
+      const td1 = document.createElement("td")
+      const td2 = document.createElement("td")
+      const td3 = document.createElement("td")
+      
+      if(user.id === activeUser.userId){
+        td1.textContent = idx
+        td2.textContent = `${user.username} (You)`
+        td3.textContent = user.totalCost
+        trTbody.appendChild(td1)
+        trTbody.appendChild(td2)
+        trTbody.appendChild(td3)
+        tbody.appendChild(trTbody)
+        console.log(leaderboardUsers)
+        idx++
+      }
+      else{
+        console.log(leaderboardUsers)
+        td1.textContent = idx
+        td2.textContent = user.username
+        td3.textContent = user.totalCost
+        trTbody.appendChild(td1)
+        trTbody.appendChild(td2)
+        trTbody.appendChild(td3)
+        tbody.appendChild(trTbody)
+        idx++
+      }
+    })
+    
+})

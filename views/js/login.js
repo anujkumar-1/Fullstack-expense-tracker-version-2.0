@@ -1,8 +1,8 @@
 async function login(event){
     try {
         event.preventDefault();
-        const email= event.target.verifyEmail.value;
-        const password= event.target.verifyPassword.value;
+        const email= event.target.email.value;
+        const password= event.target.password.value;
 
         let loginObj = {
            verifyEmail: email,
@@ -20,7 +20,7 @@ async function login(event){
         const div = document.getElementById("message")
         div.textContent=response.data.message
         console.log(response)
-        div.style.color="blue"
+        div.style.color="rgb(108, 99, 255)"
         
         if(response.status===200){
             window.location.href= "./Homepage.html"

@@ -5,22 +5,119 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from "bcrypt";
  
 const transporter = nodemailer.createTransport({
-  host: process.env.NODEMAILER_HOST,
+  host: "smtp.gmail.com",
   port: 465,
   secure: true, // Use `true` for port 465, `false` for all other ports
   auth: {
-    user: process.env.NODEMAILER_USER_EMAIL,
-    pass: process.env.NODEMAILER_GMAIL_PASSKEY,
+    user: "jesuoor@gmail.com",
+    pass: "owxwvlcayisnlmyn",
   },
+  
 });
 
 
-export async function sendMail(to, sub, msg, id){
+export async function sendMail(to, sub, msg, id, name){
     await transporter.sendMail({
         to: to,
         subject: sub,
         text: msg,
-        html: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset Password</a>`, // html body
+        html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Reset Password</title>
+            <style>
+                body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+                color: #333333;
+                line-height: 1.6;
+                }
+                .email-container {
+                max-width: 600px;
+                margin: 20px auto;
+                background: #ffffff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                .email-header {
+                background-color: #6c63ff;
+                color: #ffffff;
+                padding: 20px;
+                text-align: center;
+                border-radius: 8px 8px 0 0;
+                }
+                .email-header h1 {
+                margin: 0;
+                font-size: 24px;
+                }
+                .email-body {
+                padding: 20px;
+                }
+                .email-body p {
+                margin: 10px 0;
+                font-size: 16px;
+                }
+                .reset-button {
+                display: inline-block;
+                margin: 20px 0;
+                padding: 12px 24px;
+                background-color: #6c63ff;
+                color: #ffffff;
+                text-decoration: none;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 6px;
+                }
+                .reset-button:hover {
+                background-color: #5446cc;
+                }
+                .email-footer {
+                text-align: center;
+                font-size: 14px;
+                color: #999999;
+                padding: 20px;
+                border-top: 1px solid #dddddd;
+                }
+                .email-footer a {
+                color: #6c63ff;
+                text-decoration: none;
+                }
+                .email-footer a:hover {
+                text-decoration: underline;
+                }
+            </style>
+            </head>
+            <body>
+            <div class="email-container">
+                <div class="email-header">
+                <h1>Reset Your Password</h1>
+                </div>
+                <div class="email-body">
+                <p>Hi ${name},</p>
+                <p>We received a request to reset your password. Click the button below to reset it:</p>
+                <p style="text-align: center;">
+                    <a href="http://localhost:3000/password/resetpassword/${id}" class="reset-button">Reset Password</a>
+                </p>
+                <p>If you didn’t request this, please ignore this email or contact support if you have concerns.</p>
+                <p>Thanks,</p>
+                <p>The Expenso Team</p>
+                </div>
+                <div class="email-footer">
+                <p>If you're having trouble clicking the button, copy and paste the link below into your web browser:</p>
+                <p><a href="#">Click here</a></p>
+                <p>&copy; 2025 Expenso. All rights reserved.</p>
+                </div>
+            </div>
+            </body>
+            </html>
+
+            `, // html body
     })
 }
 
@@ -34,8 +131,8 @@ export const forgetPasswordReq = async(req, res) =>{
         console.log(user)
         if(user){
             const id = uuidv4()
-            const msg = await sendMail(email, `Reset Password for ${email}`, "Click on the link below", id)
-            const data=await ForgetPassword.create({id: id, userId: req.user.userId, isActive: true})
+            const msg = await sendMail(email, `Reset Password for ${email}`, "Click on the link below", id, req.user.name)
+            const data=await ForgetPassword.create({id: id, userId: req.user.userId, isActive: true, userInfoId: req.user.userId})
             console.log(id)
             res.status(200).json({msg})
 
@@ -88,7 +185,7 @@ export const resetPasswordReq = async (req, res) => {
                     .reset-password-form h1 {
                         font-size: 1.8rem;
                         margin-bottom: 1.5rem;
-                        color: rgb(108, 99, 255);
+                        color: color: rgb(51, 51, 51);;
                         text-align: center;
                     }
 

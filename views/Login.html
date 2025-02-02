@@ -3,34 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Form</title>
-  <link rel="stylesheet" href="../styles/Login.css">
+  <link rel="stylesheet" href="./styles/Login.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+  <title>Login Form</title>
+  
 </head>
 <body>
-  <div class="login-container">
-    <form class="login-form" id="login-form" onsubmit="login(event)">
-      <h1>Login</h1>
+  <div class="form-container">
+    <div id="message"></div>
+    <h2>Login</h2>
+    <form onsubmit="login(event)" id="login-form">
       <div class="form-group">
-        <label for="verifyEmail">Email</label>
-        <input type="email" id="verifyEmail" name="verifyEmail" placeholder="Enter your email" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
       </div>
       <div class="form-group">
-        <label for="verifyPassword">Password</label>
-        <input type="password" id="verifyPassword" name="verifyPassword" placeholder="Enter your password" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
       </div>
-      <button type="submit" id="loginButton">Log In</button>
+      <button type="submit" class="btn">Login</button>
     </form>
 
-    <div class="forgotPassword">
-        <p>or <a href="./ForgetPassword.html" class="forgotLink">Forgot Password?</a></p>
-    </div>
-
-    <div id="message"></div>
-    <div id="signup">
-        <a href="./Signup.html" id="signUpPage">Sign Up Now</a>
+    <div class="additional-links">
+      <p><a href="./ForgetPassword.html">Forgot Password?</a></p>
+      <p>Don't have an account? <a href="./Signup.html">Sign Up</a></p>
     </div>
   </div>
   <script src="./js/login.js"></script>
 </body>
 </html>
+

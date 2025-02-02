@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker - Home Page</title>
+    <!-- <link rel="stylesheet" href="../styles/Homepage.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+      /* General reset for consistent styling */
+/* General reset for consistent styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #eaf4f4;
+    color: #2e3d49;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.heading h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #004d40;
+    margin-bottom: 20px;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form input, form select, form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #004d40;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #00796b;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #004d40;
+}
+
+.premiumContainer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.premiumContainer button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #00796b;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.premiumContainer button:hover {
+    background-color: #004d40;
+}
+
+#selectPageLength, #getUserExpensePreference {
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.container table th, .container table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.container table th {
+    background-color: #00796b;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#s3DataDownload button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #00796b;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#s3DataDownload button:hover {
+    background-color: #004d40;
+}
+
+#showLeaderboard .container {
+    margin-top: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .heading h1 {
+        font-size: 2rem;
+    }
+
+    form {
+        padding: 15px;
+    }
+
+    form input, form select, form button {
+        font-size: 0.9rem;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .heading h1 {
+        font-size: 1.5rem;
+    }
+
+    form input, form select, form button {
+        font-size: 0.8rem;
+    }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <div class="heading">
+      <h1>Expense Tracker</h1>
+    </div>
+    <form onsubmit="expenseForm(event)" id="expensePage">
+      <input type="number" id="amount" name="amount" placeholder="Chose Expense Amout" />
+      <input type="text" id="itemDescription" name="itemDescription" placeholder="Expense name"/>
+
+      <label for="cateogory">''</label>
+      <select id="cateogory" name="category" placeholder="Cateogory">
+        <option value="food">Select Category</option>
+        <option value="Income" disabled>Select Income</option>
+        <option value="Income">Salary Earned</option>
+        <option value="Income">Investment</option>
+        <option value="Income">Rental Income</option>
+        <option value="Income">Bonus & Reimbursement</option>
+        <option value="Income">Other Income</option>
+        <option value="Expenses" disabled>Select Expenses</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Food & Dining">Food & Dining</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Auto & Transport">Auto & Transport</option>
+        <option value="Education">Education & Edu Loans</option>
+        <option value="Health & Fitness">Health and personal care</option>
+        <option value="Bills">Bills & Utilities</option>
+        <option value="Kids & Pet Care">Kids & Pet Care</option>
+        <option value="Travel">Travel</option>
+        <option value="Loans & Taxes">Loans & Taxes</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Misc. Expense">Misc. Expense</option>
+      </select>
+
+      <button type="submit">Add Expense</button>
+
+    </form>
+    <div class="premiumContainer">
+     
+      <div id="ispremium"></div>
+      <button id="rzp-button1">Buy Premium</button>
+
+      <div id="leaderboard"></div>
+      <button id="premiumLeaderBoard" style="display: none";>Show Leaderboard</button>
+    </div>
+
+    </div>
+    
+    <div id="goback">
+      <a href="./login.html" id="loginPage">Go Back</a>
+    </div>
+
+    <div id="selectPageLength">
+      <label for="selectPage">Rows per page: </label>
+      <select name="selectPage" id="selectPage" onchange="selectTable()">
+        <option value="7" selected>select</option>
+        <option value="10" >10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+      </select>
+    </div>
+
+    <div id="getUserExpensePreference">
+      <label for="getUserDataPreference">Get Expense: </label>
+      <select name="getUserDataPreference" id="getUserDataPreference" onchange="getUserExpensePreference()">
+        <option value="daily" selected>select</option>
+        <option value="daily">Daily</option>
+        <option value="weekly" >weekly</option>
+        <option value="monthly" >Monthly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+    </div>
+
+    <div class="container">
+      <div>
+        <h2>All Expenses</h2>
+        
+      </div>
+      <table id="table">
+        <thead id="thead">
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Income</th>
+            <th>Expense amount</th>
+            <th>Delete Expense</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="pagination" id="pagination">
+      
+    </div>
+
+    <div id="s3DataDownload" style="display: none;">
+      <button id="s3Button">Download All Data</button>
+    </div>
+
+    <div id="showLeaderboard" style="display: none;" class="container">
+      <div>
+        <h2>Leaderboard</h2>
+      </div>
+      <table id="tableshowLeaderboard">
+        <thead id="theadshowLeaderboard">
+          <tr >
+            <th>S No.</th>
+            <th>Name</th>
+            <th>Totalcost</th>
+            
+          </tr>
+        </thead>
+        <tbody id="tbodyshowLeaderboard">
+        </tbody>
+      </table>
+    </div>
+    
+    
+    <!-- <script src="./js/homePage.js"></script> -->
+    
+
+    <script>
+      
+    </script>
+  </body>
+</html>

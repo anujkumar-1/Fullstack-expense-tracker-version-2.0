@@ -12,7 +12,7 @@ export const buyPremiumGetReq = async (req, res) => {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const amount = 5000;
+    const amount = 100;
     rzp.orders.create({ amount, currency: "INR" }, async (err, order) => {
       try {
         if (err) {
@@ -76,10 +76,10 @@ export const updatePremiumReqFailed = async function (req, res) {
       paymentstatus: payment_id,
       status: "Failed"
     });
-    t.commit()
+    // t.commit()
     res.status(200).json({ sucess: false, message: "Transaction Failed" });
   } catch (error) {
-    t.rollback()
+    // t.rollback()
     throw new Error(error);
   }
 };
@@ -96,6 +96,7 @@ export const getAllLeaderboardUser = async function (req, res) {
       },
       attributes: ["id","username", "totalCost"],
       order: [["totalCost", "DESC"]],
+      limit: 30
     });
 
     res.status(200).json({ arrOfAllUsers, user: req.user });

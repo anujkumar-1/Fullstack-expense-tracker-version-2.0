@@ -1,7 +1,7 @@
 async function forgotPassword(event) {
     event.preventDefault();
     
-    const email = event.target.forgotEmail.value
+    const email = event.target.email.value
     const token = localStorage.getItem("token")
     let forgotEmail ={
         email: email
